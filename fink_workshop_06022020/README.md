@@ -20,7 +20,7 @@ The workshop will be held at **IJCLab (ex-LAL, building 200), room 101**. IJCLab
 
 ## Get started
 
-Tutorials and instruction are located under `docs.zip`. Untar it, and open the `docs/html/index.html` page:
+Tutorials and instruction are located under `docs.zip`. Unzip it, and open the `docs/html/index.html` page:
 
 ```bash
 unzip docs.zip
