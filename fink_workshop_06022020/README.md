@@ -20,9 +20,11 @@ The workshop will be held at **IJCLab (ex-LAL, building 200), room 101**. IJCLab
 
 ## Get started
 
-Tutorials and instruction are located under `docs.zip`. Unzip it, and open the `docs/html/index.html` page:
+Tutorials and instruction are located under `docs.zip`. Clone this repo, walk to `fink_workshop_06022020`, unzip the file, and open the `docs/html/index.html` page:
 
 ```bash
+git clone https://github.com/astrolabsoftware/fink-tutorials
+cd fink_workshop_06022020
 unzip docs.zip
 open docs/html/index.html
 ```
