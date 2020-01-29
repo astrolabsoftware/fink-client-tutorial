@@ -12,10 +12,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+""" Poll the Fink servers only once at a time """
 from fink_client.consumer import AlertConsumer
 import fink_client.fink_client_conf_cloud as fcc
 
-def poll_single_alert():
+def poll_single_alert() -> None:
     """ Connect to and poll fink servers once.
     """
     # Load configuration parameters

@@ -12,7 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-""" Poll the Fink servers only once at a time and plot alert """
+""" Poll the Fink servers only once at a time, plot alert, and save it """
 from fink_client.consumer import AlertConsumer
 import fink_client.fink_client_conf_cloud as fcc
 
@@ -23,6 +23,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 
 import numpy as np
+import argparse
 
 # For plots
 font = {
@@ -103,8 +104,13 @@ def plot_alert_data(alert: dict) -> None:
     plt.ylabel('Difference magnitude')
     plt.show()
 
-def poll_single_alert() -> (str, dict):
+def poll_single_alert(outdir: str) -> (str, dict):
     """ Connect to and poll fink servers once.
+
+    Parameters
+    ----------
+    outdir: str
+        Directory to store incoming alerts. It must exist.
 
     Returns
     ---------
@@ -127,7 +133,7 @@ def poll_single_alert() -> (str, dict):
     consumer = AlertConsumer(fcc.mytopics, myconfig, schema=fcc.schema)
 
     # Poll the servers
-    topic, alert = consumer.poll(fcc.maxtimeout)
+    topic, alert = consumer.poll_and_write(outdir, fcc.maxtimeout)
 
     # Analyse output
     if topic is not None:
@@ -147,6 +153,12 @@ def poll_single_alert() -> (str, dict):
 
 
 if __name__ == "__main__":
-    topic, alert = poll_single_alert()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        '-outdir', type=str, default='.',
+        help="Folder to store incoming alerts if --save is set. It must exist.")
+    args = parser.parse_args(None)
+
+    topic, alert = poll_single_alert(args.outdir)
     if topic is not None:
         plot_alert_data(alert)
