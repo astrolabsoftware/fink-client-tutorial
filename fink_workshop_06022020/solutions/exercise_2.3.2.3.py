@@ -16,7 +16,7 @@
 reject alerts that are too close to a known Solar System object.
 """
 from fink_client.consumer import AlertConsumer
-import fink_client.fink_client_conf_cloud as fcc
+import fink_client.fink_client_conf as fcc
 
 from fink_client.visualisation import show_stamps
 from fink_client.visualisation import extract_field

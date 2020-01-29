@@ -14,7 +14,7 @@
 # limitations under the License.
 """ Poll the Fink servers only once at a time """
 from fink_client.consumer import AlertConsumer
-import fink_client.fink_client_conf_cloud as fcc
+import fink_client.fink_client_conf as fcc
 
 def poll_single_alert() -> None:
     """ Connect to and poll fink servers once.

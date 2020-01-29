@@ -14,7 +14,7 @@
 # limitations under the License.
 """ Poll the Fink servers only once at a time, plot alert, and save it """
 from fink_client.consumer import AlertConsumer
-import fink_client.fink_client_conf_cloud as fcc
+import fink_client.fink_client_conf as fcc
 
 from fink_client.visualisation import show_stamps
 from fink_client.visualisation import extract_field
