@@ -12,7 +12,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-""" Poll the Fink servers only once at a time, plot alert, and save it """
+""" Poll the Fink servers only once at a time, plot alert, and save it.
+reject alerts that are too close to a known Solar System object.
+"""
 from fink_client.consumer import AlertConsumer
 import fink_client.fink_client_conf_cloud as fcc
 
@@ -48,6 +50,32 @@ filter_color = {1: '#1f77b4', 2: '#ff7f0e', 3: '#2ca02c'}
 #     '#17becf'   # blue-teal
 # ]
 filter_name = {1: 'g band', 2: 'r band', 3: 'i band'}
+
+def is_close_to_sso(alert: dict) -> bool:
+    """ Check if the alert is close to a known solar system object.
+
+    Note that a value of -999.0 means no information, and the alert will be
+    considered as NOT close to a solar system object.
+
+    Parameters
+    ----------
+    alert: dict
+        Alert data in a dictionary.
+    """
+    # Distance & name to known solar system object
+    ssdistnr = alert['candidate']['ssdistnr']
+    ssnamenr = alert['candidate']['ssnamenr']
+
+    # Note that a value of -999.0 means no information.
+    if ssdistnr > 0 and ssdistnr < 5:
+        msg = """
+        WARNING: alert close to known solar system object:
+        {} arcsec from {}
+        """.format(ssdistnr, ssnamenr)
+        print(msg)
+        return True
+    return False
+
 
 def plot_alert_data(alert: dict) -> None:
     """ Plot alert data (stamps and lightcurve)
@@ -137,12 +165,15 @@ def poll_single_alert(outdir: str) -> (str, dict):
 
     # Analyse output
     if topic is not None:
+        # Distance to known solar system object
+        ssdistnr = alert['candidate']['ssdistnr']
+
         print("-" * 65)
         row = [
             alert['timestamp'], topic, alert['objectId'],
-            alert['cdsxmatch'], alert['rfscore']
+            alert['cdsxmatch'], alert['rfscore'], ssdistnr
         ]
-        print("{:<25}|{:<10}|{:<15}|{:<10}|{:<5}|".format(*row))
+        print("{:<25}|{:<10}|{:<15}|{:<10}|{:<5}|{:<10}".format(*row))
     else:
         print('No alerts received in the last {} seconds'.format(fcc.maxtimeout))
 
@@ -160,5 +191,6 @@ if __name__ == "__main__":
     args = parser.parse_args(None)
 
     topic, alert = poll_single_alert(args.outdir)
-    if topic is not None:
+
+    if topic is not None and not is_close_to_sso(alert):
         plot_alert_data(alert)
