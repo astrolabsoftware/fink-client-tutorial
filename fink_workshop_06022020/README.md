@@ -25,8 +25,8 @@ Tutorials and instruction are located under `docs.zip`. Clone this repo, walk to
 ```bash
 git clone https://github.com/astrolabsoftware/fink-tutorials
 cd fink_workshop_06022020
-unzip docs.zip
+unzip -o docs.zip
 open docs/html/index.html
 ```
 
-Then follow the tutorials one by one! Test data is under `datatest`. For the the tutorials, you can use your favourite tool: Jupyter notebook, (i)python shell, scripts, IDE ...
+Then follow the tutorials one by one! Test data is under `datatest/`, solutions to exercises are under `solutions/`. For the the tutorials, you can use your favourite tool: Jupyter notebook, (i)python shell, scripts, IDE ...
