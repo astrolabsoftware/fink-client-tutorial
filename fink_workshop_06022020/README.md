@@ -6,8 +6,13 @@ Welcome to the first Fink Workshop!
 
 This first Fink workshop contains short presentations about the status of the
 Fink project and its roadmap until the full proposal submission (15/06/2020).
-There are also tutorials to explore alert data and Fink tools. Participants will learn what is an alert and what it contains,
-how to connect to Fink streams, build a Fink filter, a Fink science module, and interface external alert streams to Fink.
+There are also tutorials to explore alert data and Fink tools:
+
+* Exploring ZTF Alerts
+* Connect to Fink alert streams
+* Fink filters: how they work?
+* Fink science modules & broker added values
+* Fink and external alert streams
 
 Throughout all tutorials, we will use ZTF alert data that are currently available
 and have similar structure to the expected one for LSST alerts.
