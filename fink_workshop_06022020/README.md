@@ -53,7 +53,7 @@ python -c 'import fink_client; print(fink_client.__version__)'
 
 ## Get started
 
-Tutorials and instruction are located under `docs.zip`. Clone this repo, walk to `fink_workshop_06022020`, unzip the file, and open the `docs/html/index.html` page:
+Tutorials and instruction are located under `docs.zip`. Clone this repo (and you can even give it a star - to ease its retrieval, and well... increase its visibility as well), walk to `fink_workshop_06022020`, unzip the file, and open the `docs/html/index.html` page:
 
 ```bash
 git clone https://github.com/astrolabsoftware/fink-tutorials
