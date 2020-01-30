@@ -51,7 +51,7 @@ python -c 'import fink_client; print(fink_client.__version__)'
 # should print 0.2.0
 ```
 
-## Get started
+## C'est parti!
 
 Tutorials and instruction are located under `docs.zip`. Clone this repo (and you can even give it a star - to ease its retrieval, and well... increase its visibility as well), walk to `fink_workshop_06022020`, unzip the file, and open the `docs/html/index.html` page:
 
