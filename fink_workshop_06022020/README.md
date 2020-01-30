@@ -2,7 +2,7 @@
 
 Welcome to the first Fink Workshop!
 
-**Goals for the workshop**
+## Goals for the workshop
 
 This first Fink workshop contains short presentations about the status of the
 Fink project and its roadmap until the full proposal submission (15/06/2020).
