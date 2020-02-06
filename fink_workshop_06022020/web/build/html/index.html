@@ -1,0 +1,173 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>First Fink Workshop &#8212; First Fink Workshop 0.1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="1. Exploring ZTF Alerts" href="tasks/display_ztf_alerts.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="first-fink-workshop">
+<h1>First Fink Workshop<a class="headerlink" href="#first-fink-workshop" title="Permalink to this headline">¶</a></h1>
+<blockquote>
+<div><em>6 February 2020, IJCLab</em></div></blockquote>
+<p>Welcome to the first Fink Workshop!</p>
+<p><strong>Goals for the workshop</strong></p>
+<p>This first Fink workshop contains short presentations about the status of the
+Fink project and its roadmap until the full proposal submission (15/06/2020).
+There are also tutorials to explore alert data and Fink tools. Participants will learn what is an alert and what it contains,
+how to connect to Fink streams, build a Fink filter, a Fink science module, and interface
+external alert streams to Fink.</p>
+<p>Throughout all tutorials, we will use ZTF alert data that are currently available
+and have similar structure to the expected one for LSST alerts.</p>
+<p><strong>Before starting</strong></p>
+<ol class="arabic simple">
+<li>Participants are expected to work from an Unix machine (mac/linux), with python3 installed (we recommend Anaconda). We cannot guarantee tutorials will work on Windows.</li>
+<li><strong>Participants need an Internet connection:</strong> eduroam should be available on the room, so make sure you get an account before the workshop!</li>
+<li>You will also need to have <cite>fink_client&gt;=0.2</cite> installed with dependencies:</li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install fink-client somewhere on your computer</span>
+git clone https://github.com/astrolabsoftware/fink-client
+<span class="nb">cd</span> fink-client
+pip install --upgrade pip setuptools wheel
+pip install -r requirements.txt
+</pre></div>
+</div>
+<p>Then, assuming you are using bash shell, update your <cite>~/.bash_profile</cite> with the path to the library and binaries:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add these lines at the end of your ~/.bash_profile</span>
+<span class="nb">export</span> <span class="nv">FINK_CLIENT_HOME</span><span class="o">=</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span>
+<span class="nb">export</span> <span class="nv">PYTHONPATH</span><span class="o">=</span><span class="si">${</span><span class="nv">FINK_CLIENT_HOME</span><span class="si">}</span>:<span class="nv">$PYTHONPATH</span>
+<span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="si">${</span><span class="nv">FINK_CLIENT_HOME</span><span class="si">}</span>/bin:<span class="nv">$PATH</span>
+</pre></div>
+</div>
+<p>Finally source the file to activate the changes, and check the correct installation:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span> ~/.bash_profile
+python -c <span class="s1">&#39;import fink_client; print(fink_client.__version__)&#39;</span>
+<span class="c1"># should print 0.2.0</span>
+</pre></div>
+</div>
+<div class="section" id="tutorials">
+<h2>Tutorials<a class="headerlink" href="#tutorials" title="Permalink to this headline">¶</a></h2>
+<p>There will be 2h for tutorials. The first three are expected to be done
+within the 2h - and the others can be done at home later.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tasks/display_ztf_alerts.html">1. Exploring ZTF Alerts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tasks/stream-connection.html">2. Connect to Fink alert streams</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tasks/fink-filters.html">3. Fink filters: how they work?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tasks/fink-science.html">4. Fink science modules &amp; broker added values</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tasks/fink-voevent.html">5. Fink and external alert streams</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tasks/afterword.html">6. Afterword</a></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="#">
+    <img class="logo" src="_static/1/logo.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+<p class="blurb">Introduction to Fink broker and alert data.</p>
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tasks/display_ztf_alerts.html">1. Exploring ZTF Alerts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tasks/stream-connection.html">2. Connect to Fink alert streams</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tasks/fink-filters.html">3. Fink filters: how they work?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tasks/fink-science.html">4. Fink science modules &amp; broker added values</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tasks/fink-voevent.html">5. Fink and external alert streams</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tasks/afterword.html">6. Afterword</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+      <li>Next: <a href="tasks/display_ztf_alerts.html" title="next chapter">1. Exploring ZTF Alerts</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, JulienPeloton.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

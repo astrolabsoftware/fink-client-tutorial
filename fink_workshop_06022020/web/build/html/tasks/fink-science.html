@@ -1,0 +1,166 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>4. Fink science modules &amp; broker added values &#8212; First Fink Workshop 0.1 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="5. Fink and external alert streams" href="fink-voevent.html" />
+    <link rel="prev" title="3. Fink filters: how they work?" href="fink-filters.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="fink-science-modules-broker-added-values">
+<h1>4. Fink science modules &amp; broker added values<a class="headerlink" href="#fink-science-modules-broker-added-values" title="Permalink to this headline">¶</a></h1>
+<p>Each night, telescopes are sending raw alerts, with minimal information such as sky location, flux of the transient, and historical data at this location. The main role of brokers is to enrich these alerts by adding new information to identify interesting candidates for follow-up observations or further scientific processing.</p>
+<p><img alt="jpg" src="../_images/who_s_who.jpg" /></p>
+<div class="section" id="fink-science-cases">
+<h2>4.1. Fink science cases<a class="headerlink" href="#fink-science-cases" title="Permalink to this headline">¶</a></h2>
+<p>In Fink we mainly focus on 4 science cases, namely we have experts onboard on:</p>
+<ul class="simple">
+<li>Detection of supernovae: Ia, but not only!</li>
+<li>Multi-messenger astronomy: Gamma Ray Bursts, gamma ray, X, gravitational waves, neutrino, …</li>
+<li>Study of micro-lensing: compact objects, …</li>
+<li>Anomaly detection: unravelling the unknown!</li>
+</ul>
+<p>For each of these cases, the enrichment is provided by the broker services (e.g. identification from the CDS cross-match service) and by collaborator science modules (e.g. classification based on machine learning, annotation, or feature extraction algorithms). The added information is in form of extra fields inside the redistributed alert packet, and you would access to it the same way as any other LSST or ZTF original fields. Below we summarise the fields currently added by the Fink science modules:</p>
+<table border="1" class="docutils">
+<thead>
+<tr>
+<th align="left">Field</th>
+<th align="left">Type</th>
+<th align="left">Contents</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>cdsxmatch</code></td>
+<td align="left">string</td>
+<td align="left">Counterpart (cross-match) in the Simbad database</td>
+</tr>
+<tr>
+<td align="left"><code>rfscore</code></td>
+<td align="left">float</td>
+<td align="left">Probability to be a SN Ia based on Random Forest classifier (1 is SN Ia). Based on https://arxiv.org/abs/1804.03765</td>
+</tr>
+</tbody>
+</table></div>
+<div class="section" id="how-to-include-your-science-case-in-fink">
+<h2>4.2. How to include your science case in Fink?<a class="headerlink" href="#how-to-include-your-science-case-in-fink" title="Permalink to this headline">¶</a></h2>
+<p>First let <a class="reference external" href="mailto:peloton&#37;&#52;&#48;lal&#46;in2p3&#46;fr,emilleishida&#37;&#52;&#48;gmail&#46;com,anais&#46;moller&#37;&#52;&#48;clermont&#46;in2p3&#46;fr">us</a> know about your science proposal! We are open to contributions in the science cases mentioned above, but also to new contributions that are not listed.</p>
+<p>Note however that the integration inside the broker is not trivial, as one needs to take into account for example the streaming aspect of the processing and the distributed environment aspect (software and data are distributed and alerts are processed on many machines). In any case, if you already have a scientific module or prototype, we would be super happy to make the integration within the broker, otherwise we will design it together. Keep in mind, the criteria for acceptance are:</p>
+<ul class="simple">
+<li>The science module works ;-)</li>
+<li>The execution time is not too long.</li>
+</ul>
+<p>We want to process data as fast as possible, and long running times add delay for further follow-up observations. What execution time is acceptable? It depends, but in any case communicate early the extra time overhead, and we can have a look together on how to speed-up the process if needed.</p>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../index.html">
+    <img class="logo" src="../_static/1/logo.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+<p class="blurb">Introduction to Fink broker and alert data.</p>
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="display_ztf_alerts.html">1. Exploring ZTF Alerts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stream-connection.html">2. Connect to Fink alert streams</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fink-filters.html">3. Fink filters: how they work?</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">4. Fink science modules &amp; broker added values</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fink-voevent.html">5. Fink and external alert streams</a></li>
+<li class="toctree-l1"><a class="reference internal" href="afterword.html">6. Afterword</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="fink-filters.html" title="previous chapter">3. Fink filters: how they work?</a></li>
+      <li>Next: <a href="fink-voevent.html" title="next chapter">5. Fink and external alert streams</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, JulienPeloton.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/tasks/fink-science.md.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

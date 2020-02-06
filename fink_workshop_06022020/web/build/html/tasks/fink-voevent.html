@@ -1,0 +1,140 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>5. Fink and external alert streams &#8212; First Fink Workshop 0.1 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="6. Afterword" href="afterword.html" />
+    <link rel="prev" title="4. Fink science modules &amp; broker added values" href="fink-science.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="fink-and-external-alert-streams">
+<h1>5. Fink and external alert streams<a class="headerlink" href="#fink-and-external-alert-streams" title="Permalink to this headline">¶</a></h1>
+<p><img alt="jpg" src="../_images/babel.jpg" /></p>
+<div class="section" id="est-ce-que-vous-parlez-francais">
+<h2>5.1. Est-ce que vous parlez français?<a class="headerlink" href="#est-ce-que-vous-parlez-francais" title="Permalink to this headline">¶</a></h2>
+<p>Each night the same events can be seen by several experiments. The combination of probes makes the work very exciting as the scientific potential of all these experiments will only be fully exploited when combined, as demonstrated by the event GW170817 where a follow-up of unprecedented magnitude, involving more than 70 space and ground based telescopes and thousands of people, took place to draw a full multi-messenger astronomy picture.</p>
+<p>But life would be too simple if we would use all the same tools, data formats, and protocols to communicate. Despite some efforts to impose common practices (let thanks the <a class="reference external" href="http://virtualobservatory.org/">Virtual Astronomical Observatory</a> for example), the particularity of each experiment often (not always though) justifies the choice of different tools.</p>
+<p>In the case of ZTF or LSST, the volume of alert data to be transferred makes traditional formats and tools like VOEvent and VOEvent Transport Protocol in a difficult position to work efficiently. Instead, both experiments chose to use tools with proven records in a big data context: Apache Avro (replace VOEvent), and Apache Kafka (replace VTP). This choice of tools makes sense in the point of view of ZTF and LSST, but it makes harder the integration of these experiments with the current eco-system of telescopes. One of the role of their brokers is to make sure this integration is still possible, by e.g.</p>
+<ul class="simple">
+<li>Listening to external VOevent-based stream (CTA, SVOM, KM3NET, LIGO/Virgo, …), and performing coincidences with the internal Avro-based stream (ZTF or LSST).</li>
+<li>Converting alerts of interest in the traditional VOevent format, and redistributing them using VTP.</li>
+</ul>
+<p>While Fink tackled the first bullet (listening), the second one (redistributing) is still under development.</p>
+</div>
+<div class="section" id="plug-in-external-voevent-based-stream-in-fink">
+<h2>5.2. Plug-in external VOevent-based stream in Fink<a class="headerlink" href="#plug-in-external-voevent-based-stream-in-fink" title="Permalink to this headline">¶</a></h2>
+<p>In Fink, we use the <a class="reference external" href="https://github.com/jdswinbank/Comet">Comet broker</a> (open source implementation of VTP) to subscribe to streams and receive VOEvents sent by other telescopes. We have a handler that converts the format to <a class="reference external" href="https://parquet.apache.org/">Apache Parquet</a>, suitable for a usage with Apache Spark (at the heart of Fink). The received alerts are converted into a live stream, and correlated with the Fink internal streams to compute for example coincidences.</p>
+<p>Hence, to interface your alert data with Fink, the only things to do is to communicate the IP address on which you publish.</p>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../index.html">
+    <img class="logo" src="../_static/1/logo.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+<p class="blurb">Introduction to Fink broker and alert data.</p>
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="display_ztf_alerts.html">1. Exploring ZTF Alerts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stream-connection.html">2. Connect to Fink alert streams</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fink-filters.html">3. Fink filters: how they work?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fink-science.html">4. Fink science modules &amp; broker added values</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">5. Fink and external alert streams</a></li>
+<li class="toctree-l1"><a class="reference internal" href="afterword.html">6. Afterword</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="fink-science.html" title="previous chapter">4. Fink science modules &amp; broker added values</a></li>
+      <li>Next: <a href="afterword.html" title="next chapter">6. Afterword</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, JulienPeloton.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/tasks/fink-voevent.md.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,284 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>1. Exploring ZTF Alerts &#8212; First Fink Workshop 0.1 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="2. Connect to Fink alert streams" href="stream-connection.html" />
+    <link rel="prev" title="First Fink Workshop" href="../index.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="exploring-ztf-alerts">
+<h1>1. Exploring ZTF Alerts<a class="headerlink" href="#exploring-ztf-alerts" title="Permalink to this headline">¶</a></h1>
+<p>This first tutorial shows how to open, explore and display information contained in an alert from ZTF. You can play this tutorial in a Jupyter notebook, an interactive Python session, or a Python script.</p>
+<p><img alt="jpg" src="../_images/welcome.jpg" /></p>
+<p><strong>Before starting</strong></p>
+<p>Make sure <code class="docutils literal notranslate"><span class="pre">fink-client</span></code> is correctly installed (see the <a class="reference external" href="../index.html">index</a> page of the tutorial).</p>
+<div class="section" id="set-up">
+<h2>1.1. Set up<a class="headerlink" href="#set-up" title="Permalink to this headline">¶</a></h2>
+<p>Import necessary packages and set up matplotlib parameters for readable plots</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">fink_client.avroUtils</span> <span class="kn">import</span> <span class="n">AlertReader</span>
+<span class="kn">from</span> <span class="nn">fink_client.visualisation</span> <span class="kn">import</span> <span class="n">show_stamps</span>
+<span class="kn">from</span> <span class="nn">fink_client.visualisation</span> <span class="kn">import</span> <span class="n">extract_field</span>
+
+<span class="c1"># For plots</span>
+<span class="n">font</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;weight&#39;</span><span class="p">:</span> <span class="s1">&#39;bold&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;size&#39;</span><span class="p">:</span> <span class="mi">22</span>
+<span class="p">}</span>
+
+<span class="n">matplotlib</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="s1">&#39;font&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">font</span><span class="p">)</span>
+
+<span class="c1"># Bands</span>
+<span class="n">filter_color</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="s1">&#39;#1f77b4&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="s1">&#39;#ff7f0e&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span> <span class="s1">&#39;#2ca02c&#39;</span><span class="p">}</span>
+<span class="c1"># [</span>
+<span class="c1">#     &#39;#1f77b4&#39;,  # muted blue</span>
+<span class="c1">#     &#39;#ff7f0e&#39;,  # safety orange</span>
+<span class="c1">#     &#39;#2ca02c&#39;,  # cooked asparagus green</span>
+<span class="c1">#     &#39;#d62728&#39;,  # brick red</span>
+<span class="c1">#     &#39;#9467bd&#39;,  # muted purple</span>
+<span class="c1">#     &#39;#8c564b&#39;,  # chestnut brown</span>
+<span class="c1">#     &#39;#e377c2&#39;,  # raspberry yogurt pink</span>
+<span class="c1">#     &#39;#7f7f7f&#39;,  # middle gray</span>
+<span class="c1">#     &#39;#bcbd22&#39;,  # curry yellow-green</span>
+<span class="c1">#     &#39;#17becf&#39;   # blue-teal</span>
+<span class="c1"># ]</span>
+<span class="n">filter_name</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="s1">&#39;g band&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="s1">&#39;r band&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span> <span class="s1">&#39;i band&#39;</span><span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="load-alert-data">
+<h2>1.2. Load alert data<a class="headerlink" href="#load-alert-data" title="Permalink to this headline">¶</a></h2>
+<p>ZTF alert data are serialised in Avro format. Since this format is not widely spread in the astronomy community, we provide the class <code class="docutils literal notranslate"><span class="pre">AlertReader</span></code> to ease the alert manipulation. You can pass to it a single alert file, or a folder containing alerts:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># you will find datatest/ in the workshop repo.</span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">AlertReader</span><span class="p">(</span><span class="s1">&#39;datatest&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The reader has methods to load data, and you will probably find useful the <code class="docutils literal notranslate"><span class="pre">to_pandas</span></code> method that loads alert data into a Pandas DataFrame:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Store alert data in a Pandas DataFrame</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Similarly, you have a method <code class="docutils literal notranslate"><span class="pre">to_list</span></code>, that loads the data into a list of dictionaries (each alert being a dictionary), or <code class="docutils literal notranslate"><span class="pre">to_iterator</span></code> that returns a generator.</p>
+<p><strong>Exercise:</strong> Explore the content of alerts. What information is available? You will find the description of each field at https://zwickytransientfacility.github.io/ztf-avro-alert/</p>
+</div>
+<div class="section" id="display-cutouts">
+<h2>1.3. Display cutouts<a class="headerlink" href="#display-cutouts" title="Permalink to this headline">¶</a></h2>
+<p>You might have noticed the fields <code class="docutils literal notranslate"><span class="pre">cutout*</span></code> in each alert. These fields are 60x60 pixels image around the position of the alert. You have 3 such fields:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">cutoutScience</span></code>: the observation made by ZTF</li>
+<li><code class="docutils literal notranslate"><span class="pre">cutoutTemplate</span></code>: the reference image used to make the comparison with the observation</li>
+<li><code class="docutils literal notranslate"><span class="pre">cutoutDifference</span></code>: The difference between the observation and the reference image.</li>
+</ul>
+<p>These cutouts are stored in binary (gzip-compressed FITS cutout image). We expose the function <code class="docutils literal notranslate"><span class="pre">show_stamps</span></code> to ease their visualisation.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Take the first alert</span>
+<span class="n">alert</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">to_list</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="c1"># Display the cutouts contained in the alert</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">alert</span><span class="p">[</span><span class="s1">&#39;objectId&#39;</span><span class="p">])</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="n">show_stamps</span><span class="p">(</span><span class="n">alert</span><span class="p">,</span> <span class="n">fig</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><img alt="png" src="../_images/output_10_5.png" /></p>
+</div>
+<div class="section" id="display-lightcurve-data">
+<h2>1.4. Display lightcurve data<a class="headerlink" href="#display-lightcurve-data" title="Permalink to this headline">¶</a></h2>
+<p>Each alert has the information about the current observation (field <code class="docutils literal notranslate"><span class="pre">candidate</span></code>), but it also contains historical information at the same location up to one month (field <code class="docutils literal notranslate"><span class="pre">prv_candidates</span></code>). Fink exposes routine to retrieve the full information as one vector:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Extract all measurement dates contained in the alert</span>
+<span class="n">all_dates</span> <span class="o">=</span> <span class="n">extract_field</span><span class="p">(</span><span class="n">alert</span><span class="p">,</span> <span class="s1">&#39;jd&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This allows us to reconstruct the lightcurve for example. Note that we use the magnitude from PSF-fit photometry here (we could also have derived the apparent magnitude from the different fields)</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load alert data</span>
+<span class="n">alerts</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+
+<span class="c1"># and plot the difference magnitude as function of time.</span>
+<span class="c1"># Measurements and upper limits are treated separately.</span>
+<span class="k">for</span> <span class="n">alert</span> <span class="ow">in</span> <span class="n">alerts</span><span class="p">:</span>
+    <span class="c1"># extract current and historical data as one vector</span>
+    <span class="n">mag</span> <span class="o">=</span> <span class="n">extract_field</span><span class="p">(</span><span class="n">alert</span><span class="p">,</span> <span class="s1">&#39;magpsf&#39;</span><span class="p">)</span>
+    <span class="n">error</span> <span class="o">=</span> <span class="n">extract_field</span><span class="p">(</span><span class="n">alert</span><span class="p">,</span> <span class="s1">&#39;sigmapsf&#39;</span><span class="p">)</span>
+    <span class="n">upper</span> <span class="o">=</span> <span class="n">extract_field</span><span class="p">(</span><span class="n">alert</span><span class="p">,</span> <span class="s2">&quot;diffmaglim&quot;</span><span class="p">)</span>
+
+    <span class="c1"># filter bands</span>
+    <span class="n">fid</span> <span class="o">=</span> <span class="n">extract_field</span><span class="p">(</span><span class="n">alert</span><span class="p">,</span> <span class="s2">&quot;fid&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Rescale dates to end at 0</span>
+    <span class="n">jd</span> <span class="o">=</span> <span class="n">extract_field</span><span class="p">(</span><span class="n">alert</span><span class="p">,</span> <span class="s2">&quot;jd&quot;</span><span class="p">)</span>
+    <span class="n">dates</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">i</span> <span class="o">-</span> <span class="n">jd</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">jd</span><span class="p">])</span>
+
+    <span class="c1"># Title of the plot (alert ID)</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="n">alert</span><span class="p">[</span><span class="s2">&quot;objectId&quot;</span><span class="p">]</span>
+
+    <span class="c1"># loop over filters</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+
+    <span class="c1"># Loop over each filter</span>
+    <span class="k">for</span> <span class="n">filt</span> <span class="ow">in</span> <span class="n">filter_color</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">fid</span> <span class="o">==</span> <span class="n">filt</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># Skip if no data</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># y data</span>
+        <span class="n">maskNotNone</span> <span class="o">=</span> <span class="n">mag</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">!=</span> <span class="kc">None</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span>
+            <span class="n">dates</span><span class="p">[</span><span class="n">mask</span><span class="p">][</span><span class="n">maskNotNone</span><span class="p">],</span> <span class="n">mag</span><span class="p">[</span><span class="n">mask</span><span class="p">][</span><span class="n">maskNotNone</span><span class="p">],</span>
+            <span class="n">yerr</span><span class="o">=</span><span class="n">error</span><span class="p">[</span><span class="n">mask</span><span class="p">][</span><span class="n">maskNotNone</span><span class="p">],</span>
+            <span class="n">color</span><span class="o">=</span><span class="n">filter_color</span><span class="p">[</span><span class="n">filt</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span>
+            <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">filter_name</span><span class="p">[</span><span class="n">filt</span><span class="p">],</span> <span class="n">mew</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+        <span class="c1"># Upper limits</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+            <span class="n">dates</span><span class="p">[</span><span class="n">mask</span><span class="p">][</span><span class="o">~</span><span class="n">maskNotNone</span><span class="p">],</span> <span class="n">upper</span><span class="p">[</span><span class="n">mask</span><span class="p">][</span><span class="o">~</span><span class="n">maskNotNone</span><span class="p">],</span>
+            <span class="n">color</span><span class="o">=</span><span class="n">filter_color</span><span class="p">[</span><span class="n">filt</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;v&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">mew</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">invert_yaxis</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Days to candidate&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Difference magnitude&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><img alt="png" src="../_images/output_14_0.png" /></p>
+<p><img alt="png" src="../_images/output_14_1.png" /></p>
+<p><img alt="png" src="../_images/output_14_2.png" /></p>
+<p><img alt="png" src="../_images/output_14_3.png" /></p>
+<p>You could also plot data directly from pandas DataFrame, using built-in pandas tools.</p>
+</div>
+<div class="section" id="visualising-alerts-with-cli">
+<h2>1.5. Visualising alerts with CLI<a class="headerlink" href="#visualising-alerts-with-cli" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">fink-client</span></code> exposes also the program <code class="docutils literal notranslate"><span class="pre">fink_alert_viewer</span></code> to visualise alerts from the terminal directly:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>fink_alert_viewer -h
+usage: fink_alert_viewer <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>-filename FILENAME<span class="o">]</span>
+
+Display cutouts and lightcurve from a ZTF alert
+
+optional arguments:
+  -h, --help          show this <span class="nb">help</span> message and <span class="nb">exit</span>
+  -filename FILENAME  Path to an alert data file <span class="o">(</span>avro format<span class="o">)</span>
+</pre></div>
+</div>
+<p>Make sure that <code class="docutils literal notranslate"><span class="pre">$FINK_CLIENT_HOME/bin</span></code> is in your <code class="docutils literal notranslate"><span class="pre">$PATH</span></code> (see the beginning of this tutorial). Go to a folder with alerts (e.g. <code class="docutils literal notranslate"><span class="pre">dataset/</span></code> in the tutorial repository), and call it on one file:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>fink_alert_viewer -filename ZTF19acihgng.avro
+<span class="c1"># display cutouts &amp; lightcurve</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../index.html">
+    <img class="logo" src="../_static/1/logo.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+<p class="blurb">Introduction to Fink broker and alert data.</p>
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">1. Exploring ZTF Alerts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stream-connection.html">2. Connect to Fink alert streams</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fink-filters.html">3. Fink filters: how they work?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fink-science.html">4. Fink science modules &amp; broker added values</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fink-voevent.html">5. Fink and external alert streams</a></li>
+<li class="toctree-l1"><a class="reference internal" href="afterword.html">6. Afterword</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="../index.html" title="previous chapter">First Fink Workshop</a></li>
+      <li>Next: <a href="stream-connection.html" title="next chapter">2. Connect to Fink alert streams</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, JulienPeloton.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/tasks/display_ztf_alerts.md.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
