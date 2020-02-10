@@ -58,13 +58,12 @@ python -c 'import fink_client; print(fink_client.__version__)'
 
 ## C'est parti!
 
-Tutorials and instruction are located under `docs.zip`. Clone this repo (and you can even give it a star - to ease its retrieval, and well... increase its visibility as well), walk to `fink_workshop_06022020`, unzip the file, and open the `docs/html/index.html` page:
+Clone this repo (and you can even give it a star - to ease its retrieval, and well... increase its visibility as well), walk to `fink_workshop_06022020`, and open the `web/build/html/index.html` page:
 
 ```bash
 git clone https://github.com/astrolabsoftware/fink-tutorials
-cd fink_workshop_06022020
-unzip -o docs.zip
-open docs/html/index.html
+cd fink-tutorials/fink_workshop_06022020
+open web/build/html/index.html
 ```
 
 Then follow the tutorials one by one! Test data is under `datatest/`, solutions to exercises are under `solutions/`. For the the tutorials, you can use your favourite tool: Jupyter notebook, (i)python shell, scripts, IDE ...
