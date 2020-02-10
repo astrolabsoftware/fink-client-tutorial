@@ -1,0 +1,30 @@
+Suggestions:
+- Build a static database, something the user can replay continuously to test the filter and get some rough statistics before sending a pull request. The idea is to lower the burden on the development side.
+- Make a more clear description of Fink added values
+- Make the list of added value a property accessible through the command line (eg. dictionary) - in case someone is interested in a property that is already implemented. From Fink-client be able to pull information about filters, added values and other properties of the broker
+- Make sure that everything used in the broker is defined somewhere - people are worried about not understanding what they see
+- In general, information about Fink is too scattered. We need to centralise it.
+- What happens if an alert is chosen by 2 different science modules/alerts? It would be good to have this information somewhere
+- Put pre-filters before science modules so we can turn them on/off before and after the science module, to allow lower workload in the science modules
+- Waiting for all science modules to finish might be a problem. People need to agree on the max time required for each science module.
+- Next stage should be science validation in the ZTF alert stream: search for GRB real events to show capabilities
+- We need to start meetings with the science modules. Focus on only 2 or 3 science modules for June maximum.
+- Made a  mailing list separated by project to allow better communication
+- Damien could present a telecon on the GRB science case
+- Philippe can provide SN simulations to check the lower magnitude limit objects
+- There is already a pre-module of GRB and SVOM which can be implemented quickly
+- Make sure that Fink information goes through different networks.
+- White paper needs to be finished!
+
+Bugs see during the workshop
+- [ ] The zip file of the tutorial contains outdated information, and did not get updated even after pushing in the repo… this is a mystery, and the only solution was to push source files...
+- [ ] On Kafka, you need one “group” per user otherwise we all poll the same stream!
+- [ ] there could be a few minutes before receiving alerts after a user is authenticated for the first time.
+- [ ] A Java heap memory happened at the end of the tutorial on the distribution app… Need to increase resources allocated and keep an eye on it.
+- [ ] give the link to supervision to users so that they can check the broker availability.
+
+Idea: make a Fink document for newcomers that would contain
+- [ ] tutorial 1 & 2
+- [ ] conf id
+- [ ] link and tutorial on supervision (screenshots with explanations)
+- [ ] how to build a filter and make a science module (tutorial 3)
