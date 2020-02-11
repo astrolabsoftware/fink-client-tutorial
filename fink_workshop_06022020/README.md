@@ -29,32 +29,12 @@ The workshop will be held at **IJCLab (ex-LAL, building 200), room 101**. IJCLab
 
 1. Participants are expected to work from an Unix machine (mac/linux), with python3 installed (we recommend Anaconda). We cannot guarantee tutorials will work on Windows.
 2. **Participants need an Internet connection:** eduroam should be available on the room, so make sure you get an account before the workshop!
-3. You will also need to have `fink_client>=0.2` installed with dependencies:
-
-```bash
-# Install fink-client somewhere on your computer
-git clone https://github.com/astrolabsoftware/fink-client
-cd fink-client
-pip install --upgrade pip setuptools wheel
-pip install -r requirements.txt
-```
-
-Then, assuming you are using bash shell, update your `~/.bash_profile` with the path to the library and binaries:
-
-```bash
-# Add these lines at the end of your ~/.bash_profile
-export FINK_CLIENT_HOME=${PWD}
-export PYTHONPATH=${FINK_CLIENT_HOME}:$PYTHONPATH
-export PATH=${FINK_CLIENT_HOME}/bin:$PATH
-```
-
-Finally source the file to activate the changes, and check the correct installation:
-
-```bash
-source ~/.bash_profile
-python -c 'import fink_client; print(fink_client.__version__)'
-# should print 0.2.0
-```
+3. Install the `fink_client` (see instructions [here](https://github.com/astrolabsoftware/fink-client))
+4. Make sure the installation went through properly
+    ```bash
+    # this should print a version >= 0.2.0
+    python -c 'import fink_client; print(fink_client.__version__)'
+    ```
 
 ## C'est parti!
 
