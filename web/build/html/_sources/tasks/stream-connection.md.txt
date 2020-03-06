@@ -32,7 +32,7 @@ Hence users interested to use Fink streams must contact Anais, Emille or Julien 
 - Your username
 - The topic(s) you want to subscribe to.
 
-All connection parameters will be given during the workshop. Once you have added, edit the `fink_client/fink_client_conf.py` with your username, password (given) and group ID (given):
+Contact Fink, or subscribe at this [link](https://forms.gle/2td4jysT4e9pkf889) to get your credentials. Once you have added, edit the `fink_client/fink_client_conf.py` with your username, password (given) and group ID (given):
 
 ```python
 # template in fink_client/fink_client_conf.py
@@ -60,7 +60,7 @@ and the full path to the schemas:
 ```python
 # Incoming alert schema to decode the data. You need to specify full path.
 # If empty, the client will attempt to download the online latest version.
-schema = "/path/to/fink-client/schemas/distribution_schema_0p2.avsc"
+schema = "/path/to/fink-client/schemas/distribution_schema_0p2-live.avsc"
 ```
 
 Finally, a gentle reminder... ;-)

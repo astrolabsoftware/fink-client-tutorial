@@ -53,7 +53,7 @@ ZTF alert data are serialised in Avro format. Since this format is not widely sp
 
 
 ```python
-# you will find datatest/ in the workshop repo.
+# you will find datatest/ in the tutorial repo.
 r = AlertReader('datatest')
 ```
 

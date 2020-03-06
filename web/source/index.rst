@@ -1,15 +1,13 @@
 =====================================
-First Fink Workshop
+Fink client tutorial
 =====================================
 
-  *6 February 2020, IJCLab*
+  *Feb 2020 version*
 
 
-Welcome to the first Fink Workshop!
+**Goals for the tutorial**
 
-**Goals for the workshop**
-
-This first Fink workshop contains short presentations about the status of the
+This repository contains short presentations about the status of the
 Fink project and its roadmap until the full proposal submission (15/06/2020).
 There are also tutorials to explore alert data and Fink tools. Participants will learn what is an alert and what it contains,
 how to connect to Fink streams, build a Fink filter, a Fink science module, and interface
@@ -21,7 +19,7 @@ and have similar structure to the expected one for LSST alerts.
 **Before starting**
 
 1. Participants are expected to work from an Unix machine (mac/linux), with python3 installed (we recommend Anaconda). We cannot guarantee tutorials will work on Windows.
-2. **Participants need an Internet connection:** eduroam should be available on the room, so make sure you get an account before the workshop!
+2. **Participants need an Internet connection:**
 3. You will also need to have `fink_client>=0.2` installed with dependencies:
 
 .. code-block:: bash
