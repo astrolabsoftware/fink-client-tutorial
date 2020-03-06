@@ -28,7 +28,7 @@ and have similar structure to the expected one for LSST alerts.
 
 ## C'est parti!
 
-Clone this repo (and you can even give it a star - to ease its retrieval, and well... increase its visibility as well), and open the `web/build/html/index.html` page:
+Clone this repo, and open the `web/build/html/index.html` page:
 
 ```bash
 git clone https://github.com/astrolabsoftware/fink-client-tutorial
