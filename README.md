@@ -4,7 +4,7 @@
 
 This repository contains short presentations about the status of the
 Fink project and its roadmap until the full proposal submission (15/06/2020).
-There are also tutorials to explore alert data and Fink client tools:
+There are also tutorials to explore alert data and the [fink client](https://github.com/astrolabsoftware/fink-client):
 
 * Exploring ZTF Alerts
 * Connect to Fink alert streams
