@@ -24,36 +24,23 @@ and have similar structure to the expected one for LSST alerts.
 
 .. code-block:: bash
 
-  # Install fink-client somewhere on your computer
-  git clone https://github.com/astrolabsoftware/fink-client
-  cd fink-client
-  pip install --upgrade pip setuptools wheel
-  pip install -r requirements.txt
+  pip install fink-client
 
+Finally, in order to connect and poll alerts from Fink, you need to get your credentials:
 
-Then, assuming you are using bash shell, update your `~/.bash_profile` with the path to the library and binaries:
-
-.. code-block:: bash
-
-  # Add these lines at the end of your ~/.bash_profile
-  export FINK_CLIENT_HOME=${PWD}
-  export PYTHONPATH=${FINK_CLIENT_HOME}:$PYTHONPATH
-  export PATH=${FINK_CLIENT_HOME}/bin:$PATH
-
-
-Finally source the file to activate the changes, and check the correct installation:
-
-.. code-block:: bash
-
-  source ~/.bash_profile
-  python -c 'import fink_client; print(fink_client.__version__)'
-  # should print 0.2.0
+1. Subscribe to one or more Fink streams at https://forms.gle/2td4jysT4e9pkf889.
+2. After filling the form, we will send your credentials. Register them on your laptop by simply running:
+  ```
+  # You need fink-client installed - see above
+  fink_client_register -username <USERNAME> -group_id <GROUP_ID> ...
+  ```
 
 Tutorials
 --------------
 
-There will be 2h for tutorials. The first three are expected to be done
-within the 2h - and the others can be done at home later.
+The tutorials should take around 2h. The first three are the most important for users
+and they are expected to be doable within the 2h.
+The other tutorials expose more complex parts of the broker.
 
 .. toctree::
   :maxdepth: 1

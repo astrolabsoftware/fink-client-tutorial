@@ -14,25 +14,27 @@
 # limitations under the License.
 """ Poll the Fink servers only once at a time """
 from fink_client.consumer import AlertConsumer
-import fink_client.fink_client_conf as fcc
+from fink_client.configuration import load_credentials
 
 def poll_single_alert() -> None:
     """ Connect to and poll fink servers once.
     """
     # Load configuration parameters
-    myconfig = {
-        'username': fcc.username,
-        'bootstrap.servers': fcc.servers,
-        'group_id': fcc.group_id}
+    conf = load_credentials()
 
-    if fcc.password is not None:
-        myconfig['password'] = fcc.password
+    myconfig = {
+        "username": conf['username'],
+        'bootstrap.servers': conf['servers'],
+        'group_id': conf['group_id']}
+
+    if conf['password'] is not None:
+        myconfig['password'] = conf['password']
 
     # Instantiate a consumer
-    consumer = AlertConsumer(fcc.mytopics, myconfig, schema=fcc.schema)
+    consumer = AlertConsumer(conf['mytopics'], myconfig)
 
     # Poll the servers
-    topic, alert = consumer.poll(fcc.maxtimeout)
+    topic, alert = consumer.poll(conf['maxtimeout'])
 
     # Analyse output
     if topic is not None:
@@ -43,7 +45,11 @@ def poll_single_alert() -> None:
         ]
         print("{:<25}|{:<10}|{:<15}|{:<10}|{:<5}|".format(*row))
     else:
-        print('No alerts received in the last {} seconds'.format(fcc.maxtimeout))
+        print(
+            'No alerts received in the last {} seconds'.format(
+                conf['maxtimeout']
+            )
+        )
 
     # Close the connection to the servers
     consumer.close()

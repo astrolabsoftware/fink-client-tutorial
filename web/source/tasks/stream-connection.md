@@ -20,48 +20,23 @@ In this tutorial, we will connect to an existing Fink outgoing stream, and in th
 
 ## Connecting to Fink streams using fink_client
 
-Anyone can connect to Fink outgoing stream using [fink_client](https://github.com/astrolabsoftware/fink-client). It should be installed following the procedure explained in the [index](../index.html) page.
+Anyone can connect to Fink outgoing stream using [fink_client](https://github.com/astrolabsoftware/fink-client). The installation of the client is as easy as:
+
+```bash
+pip install fink-client
+```
 
 ### Credentials and configuration
 
 Anyone can connect to Fink stream, but we want to know who is connecting and how many simultaneous connections we have. This is mainly to size our cluster and network infrastructure. We typically have a (shared) 10 Gbps connection available, which allows us to deliver to simultaneously a hundred of users with small size streams.
 
-Hence users interested to use Fink streams must contact Anais, Emille or Julien and specify:
+Hence, in order to connect and poll alerts from Fink, you need to get your credentials:
 
-- Quickly the reasons for using Fink (no need for pages!)
-- Your username
-- The topic(s) you want to subscribe to.
-
-Contact Fink, or subscribe at this [link](https://forms.gle/2td4jysT4e9pkf889) to get your credentials. Once you have added, edit the `fink_client/fink_client_conf.py` with your username, password (given) and group ID (given):
-
-```python
-# template in fink_client/fink_client_conf.py
-username = "mygreatusername"
-password = "myimpossibletoremindpassword"
-group_id = "agroup"
-```
-
-And declare the topics you are interested in:
-
-```python
-# List of topic names you subscribed to
-mytopics = ["mysupertopic"]
-```
-
-For this tutorial, you have been added to the Kafka cluster, and all fields will be given. Then you need to specify the connection to the cluster:
-
-```python
-# Servers from which data will be pulled
-servers = "IP:PORT,"
-```
-
-and the full path to the schemas:
-
-```python
-# Incoming alert schema to decode the data. You need to specify full path.
-# If empty, the client will attempt to download the online latest version.
-schema = "/path/to/fink-client/schemas/distribution_schema_0p2-live.avsc"
-```
+1. Subscribe to one or more Fink streams by filling this [form](https://forms.gle/2td4jysT4e9pkf889).
+2. After filling the form, we will send your credentials. Register them on your laptop by simply running:
+  ```
+  fink_client_register -username <USERNAME> -group_id <GROUP_ID> ...
+  ```
 
 Finally, a gentle reminder... ;-)
 
@@ -76,25 +51,25 @@ With our configuration, we are now ready to listen Fink streams! There are mainl
 Let's open a python script (or a jupyter notebook) called `poll_single_alert.py` and instantiate a consumer:
 
 ```python
-from fink_client.consumer import AlertConsumer
-import fink_client.fink_client_conf as fcc
+# Load your configuration parameters
+conf = load_credentials()
 
 myconfig = {
-    "username": fcc.username,
-    'bootstrap.servers': fcc.servers,
-    'group_id': fcc.group_id}
+    "username": conf['username'],
+    'bootstrap.servers': conf['servers'],
+    'group_id': conf['group_id']}
 
-if fcc.password is not None:
-    myconfig['password'] = fcc.password
+if conf['password'] is not None:
+    myconfig['password'] = conf['password']
 
 # Instantiate a consumer
-consumer = AlertConsumer(fcc.mytopics, myconfig, schema=fcc.schema)
+consumer = AlertConsumer(conf['mytopics'], myconfig)
 ```
 
 This consumer has opened a connection between you and Fink. Let's try to poll an alert:
 
 ```python
-topic, alert = consumer.poll(fcc.maxtimeout)
+topic, alert = consumer.poll(conf['maxtimeout'])
 if topic is not None:
     print("-" * 65)
     row = [
@@ -103,7 +78,7 @@ if topic is not None:
     ]
     print("{:<25}|{:<10}|{:<15}|{:<10}|{:<5}|".format(*row))
 else:
-  print('No alerts received in the last {} seconds'.format(fcc.maxtimeout))
+  print('No alerts received in the last {} seconds'.format(conf['maxtimeout']))
 ```
 
 Make sure you close the connection:
@@ -139,29 +114,32 @@ Note that each Fink filter starts from the full stream. This means if an alert i
 
 ```text
 fink_consumer -h
-usage: fink_consumer [-h] [-config CONFIG] [--display] [--save]
-                     [-outdir OUTDIR]
+usage: fink_consumer [-h] [--display] [-limit LIMIT] [--available_topics]
+                     [--save] [-outdir OUTDIR]
 
 Kafka consumer to listen and archive Fink streams
 
 optional arguments:
-  -h, --help      show this help message and exit
-  -config CONFIG  Path to your Fink configuration file.
-  --display       If specified, print on screen information about incoming
-                  alert.
-  --save          If specified, save alert data on disk (Avro). See also
-                  -outdir.
-  -outdir OUTDIR  Folder to store incoming alerts if --save is set. It must
-                  exist.
+  -h, --help          show this help message and exit
+  --display           If specified, print on screen information about incoming
+                      alert.
+  -limit LIMIT        If specified, download only `limit` alerts. Default is
+                      None.
+  --available_topics  If specified, print on screen information about
+                      available topics.
+  --save              If specified, save alert data on disk (Avro). See also
+                      -outdir.
+  -outdir OUTDIR      Folder to store incoming alerts if --save is set. It
+                      must exist.
 ```
 
-For example, to listen and store each incoming alert, you would use:
+For example, to listen and store each incoming alert, limiting to the 100 first alerts, you would use:
 
 ```text
 # tmpdir/ must exist
 fink_consumer \
-  -config fink_client/fink_client_conf.py \
   --display \
+  -limit 100 \
   --save \
   -outdir tmpdir/
 ```
